@@ -1,41 +1,48 @@
 { pkgs, falsisign-src, custom-rotation ? "seq .1 .1 .5" }:
 
-with pkgs;
-
 let
-  makeDerivation = { name, prePostFixup ? "" }:
+  inherit (pkgs) stdenv lib;
+
+  makeDerivation = { bin, prePostFixup ? "" }:
     let
-      fixedPath = "${lib.makeBinPath ([ coreutils file ghostscript imagemagick ] ++ lib.optionals (name == "falsisign") [ poppler_utils ])}";
+      runtimeInputs = let
+        inputs = with pkgs; [
+          coreutils
+          file
+          ghostscript
+          imagemagick
+        ] ++ lib.optional (bin == "falsisign") poppler_utils;
+        in lib.makeBinPath inputs;
     in
     stdenv.mkDerivation {
-      pname = name;
+      pname = bin;
       version = "0.1.0";
 
-      nativeBuildInputs = [ makeWrapper ];
+      nativeBuildInputs = [ pkgs.makeWrapper ];
 
-      buildInputs = [ coreutils file ghostscript poppler_utils imagemagick ];
+      buildInputs = with pkgs; [ coreutils file ghostscript poppler_utils imagemagick ];
 
       src = falsisign-src;
 
       preBuild = ''
         for f in *.sh
         do
-          substituteInPlace "$f" --replace '#!/bin/bash' '#! ${bash}/bin/bash'
+          substituteInPlace "$f" --replace '#!/bin/bash' '#! ${pkgs.bash}/bin/bash'
         done
       '';
 
       installPhase = ''
         mkdir -p $out/bin
-        cp $src/${name}.sh $out/bin/${name}
-        chmod +x $out/bin/${name}
+        cp $src/${bin}.sh $out/bin/${bin}
+        chmod +x $out/bin/${bin}
       '';
 
       postFixup = prePostFixup + ''
         # replace bash
-        substituteInPlace $out/bin/${name} --replace '#!/bin/bash' '#! ${bash}/bin/bash'
+        substituteInPlace $out/bin/${bin} --replace '#!/bin/bash' '#! ${pkgs.bash}/bin/bash'
 
         # fix path
-        wrapProgram $out/bin/${name} --prefix PATH : ${fixedPath}
+        wrapProgram $out/bin/${bin} --prefix PATH : ${runtimeInputs}
       '';
 
       meta = with lib; {
