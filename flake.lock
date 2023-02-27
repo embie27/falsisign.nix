@@ -3,15 +3,15 @@
     "falsisign-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1643041243,
-        "narHash": "sha256-ue9aOC8boq4ikYS01GHtwi/0nZbU5LmFkVYzB+ODzSs=",
-        "owner": "edouardklein",
+        "lastModified": 1676641898,
+        "narHash": "sha256-hwV5G/zEEVzC7Rls9qVrBhgaar+ZRxlod7NVy009Z0c=",
+        "owner": "embie27",
         "repo": "falsisign",
-        "rev": "6417c42f33ef056d180bcb59750667aeb413778e",
+        "rev": "cc51ee360387a965b710508b7cb79dae17d2719b",
         "type": "gitlab"
       },
       "original": {
-        "owner": "edouardklein",
+        "owner": "embie27",
         "repo": "falsisign",
         "type": "gitlab"
       }

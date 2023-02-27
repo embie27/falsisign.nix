@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.url = github:nixos/nixpkgs/nixpkgs-unstable;
     falsisign-src = {
-      url = gitlab:edouardklein/falsisign;
+      url = gitlab:embie27/falsisign;
       flake = false;
     };
     flake-utils.url = github:numtide/flake-utils;
@@ -22,11 +22,10 @@
           drv = pkgs.callPackage ./falsisign {
             inherit pkgs falsisign-src;
           };
-        in
-		{
-		  packages = {
+        in {
+          packages = {
             falsisign = drv.falsisign;
-			signdiv = drv.signdiv;
+            signdiv = drv.signdiv;
           };
           packages.default = drv.falsisign;
         };
