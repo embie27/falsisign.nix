@@ -3,7 +3,7 @@
 let
   inherit (pkgs) stdenv lib;
 
-  makeDerivation = { bin, prePostFixup ? "" }:
+  makeDerivation = { name, prePostFixup ? "" }:
     let
       runtimeInputs = let
         inputs = with pkgs; [
@@ -11,11 +11,11 @@ let
           file
           ghostscript
           imagemagick
-        ] ++ lib.optional (bin == "falsisign") poppler_utils;
+        ] ++ lib.optional (name == "falsisign") poppler_utils;
         in lib.makeBinPath inputs;
     in
     stdenv.mkDerivation {
-      pname = bin;
+      pname = name;
       version = "0.1.0";
 
       nativeBuildInputs = [ pkgs.makeWrapper ];
@@ -33,16 +33,16 @@ let
 
       installPhase = ''
         mkdir -p $out/bin
-        cp $src/${bin}.sh $out/bin/${bin}
-        chmod +x $out/bin/${bin}
+        cp $src/${name}.sh $out/bin/${name}
+        chmod +x $out/bin/${name}
       '';
 
       postFixup = prePostFixup + ''
         # replace bash
-        substituteInPlace $out/bin/${bin} --replace '#!/bin/bash' '#! ${pkgs.bash}/bin/bash'
+        substituteInPlace $out/bin/${name} --replace '#!/bin/bash' '#! ${pkgs.bash}/bin/bash'
 
         # fix path
-        wrapProgram $out/bin/${bin} --prefix PATH : ${runtimeInputs}
+        wrapProgram $out/bin/${name} --prefix PATH : ${runtimeInputs}
       '';
 
       meta = with lib; {
