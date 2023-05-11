@@ -34,6 +34,7 @@ let
       installPhase = ''
         mkdir -p $out/bin
         cp $src/${name}.sh $out/bin/${name}
+        cp $src/falsicoord.py $out/bin/falsicoord.py
         chmod +x $out/bin/${name}
       '';
 
