@@ -11,7 +11,7 @@ let
           file
           ghostscript
           imagemagick
-        ] ++ lib.optional (name == "falsisign") poppler_utils;
+        ] ++ lib.optional (name == "falsisign") [ poppler_utils (python39.withPackages(ps: [ ps.tkinter ])) ];
         in lib.makeBinPath inputs;
     in
     stdenv.mkDerivation {
